@@ -1,0 +1,2 @@
+# Adaptando um template LaTeX para integração com R Markdown
+Tutorial do António da Silva Junior no [Medium](https://juniorssz.medium.com/adaptando-um-template-latex-para-integra%C3%A7%C3%A3o-com-r-markdown-b74f40894aad)
