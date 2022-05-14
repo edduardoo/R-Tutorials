@@ -1,0 +1,102 @@
+---
+title: "Título do trabalho de conclusão de curso de especialização"
+
+# criando um dicionário para ter uma lista dinâmica de autores, ao inves de uma lista hardcoded no .tex
+authors_dict:
+  - {name: Eduardo Jardim,
+     index: 1,
+     role: "Aluno do programa de Especialização em Data Science & Big Data, [eduardo.jardim@ufpr.br](eduardo.jardim@ufpr.br)."}
+  - {name: Orientador do Programa,
+     index: 2,
+     role: "Professor do Departamento de Estatística - DEST/UFPR, [orientador@dsbd.leg.ufpr.br](orientador@dsbd.leg.ufpr.br)."}
+  - {name: Outro Orientador do Programa,
+     index: 3,
+     role: "Professor do Departamento de Informática - DINF/UFPR.",}
+  - {name: Orientador Externo,
+     index: 4,
+     role: "Chefe do Departamento de Data Science."}
+
+year: "2021"
+
+references: "references.bib"
+biblio-style: unsrt
+lang: pt-BR
+
+output:
+  bookdown::pdf_document2: 
+    template: dsbd_tcc.tex
+    pandoc_args: ["--natbib"]
+    
+resumo: >
+  \textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+palavras_chave: "Lorem, Ipsum, Lorem, Ipsum, Lorem"
+
+abstract: >
+  \textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+keywords: "Lorem, Ipsum, Lorem, Ipsum, Lorem"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+
+options(knitr.table.format = "latex")
+
+library(ggplot2)
+library(dplyr)
+library(kableExtra)
+```
+
+# Introdução
+
+\textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker \cite{wickham2016r}
+
+# Materiais e métodos
+
+Escreva aqui.
+
+```{r nomedatabela}
+df_tabela = head(iris) # seleciona as 5 primeiras linhas do dataset iris
+df_tabela = df_tabela[,1:3] # seleciona as 3 primeiras colunas
+df_tabela %>%
+  kable(booktabs=T, caption="Legenda da tabela")
+```
+
+## Método 1
+
+\textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker \cite{grus2019data}
+
+\begin{equation}
+\log L = \sum_{i=1}^{n} \big[Y_i\ln(\pi_i) + (1-Y_i)\ln(1-\pi_i)\big]\text{.}(\#eq:nomedaequacao)
+\end{equation}
+
+## Método 2
+
+Referenciando a equação:
+A equação \@ref(eq:nomedaequacao) blablablá.
+
+\textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker.
+
+### Experimento A
+
+Referenciando a tabela:
+Conforme demonstrado na tabela \@ref(tab:nomedatabela).
+
+# Resultados e discussão
+
+\textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker.
+
+```{r nomedografico, fig.cap='Legenda do gráfico', out.width="100%", fig.align='center'}
+data(iris)
+
+iris %>%
+  ggplot(aes(x=Sepal.Length, y=Petal.Length, color=Species)) +
+  geom_point(alpha=0.6, size=3) +
+  theme(legend.position="bottom")
+
+```
+
+Conforme demonstrado na figura \@ref(fig:nomedografico).
+
+# Conclusão
+
+\textit{Lorem Ipsum} is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker.
