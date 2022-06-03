@@ -1,3 +1,5 @@
+# TUTORIAL LINK: http://leg.ufpr.br/~walmes/ensino/dsbd-linprog/manipulacao-r-python.html
+
 library(tidyverse)
 
 # Atualizar caso já tenha instalado.
@@ -393,7 +395,149 @@ v <- u %>%
               values_from = "nota")
 v
 
+##############################
+###   MEDIDAS RESUMO
+##############################
+# uma variavel ou uma estatistica
+# Aplica funções resumo nas variáveis. Retorna um vetor.
+with(df1, c(sum(prova1), mean(prova1), max(prova1),
+            min(prova1), median(prova1), sd(prova1),
+            var(prova1), length(prova1)))
 
+
+# Retorna um data.frame.
+smz <- df1 %>%
+  summarise(sum(prova1), mean(prova1), max(prova1),
+            min(prova1), median(prova1), sd(prova1),
+            var(prova1), length(prova1)) %>% t()
+smz
+class(smz) # depois do t() returna uma matrix
+
+
+# DANGER: cuidado com funções que resumem para um vetor ao invés de escalar.
+quantile(df1$prova1, probs = c(0.25, 0.75))
+range(df1$prova1)
+fivenum(df1$prova1)
+?fivenum
+table(df1$prova1)
+
+
+# Exemplo de função descritiva que retorna um vetor.
+df1 %>%
+  summarise_at(vars(starts_with("prova")),
+               quantile, 
+               probs = c(0.25, 0.75),
+               na.rm = TRUE) %>%
+  add_column(quantil = c("0.25", "0.75"), .before = 0)
+
+# estatisticas definidas pelo usuario
+df1 %>%
+  summarise(CV = 100 * sd(prova1)/mean(prova1))
+
+CV <- function(x, ...) 100 * sd(x, ...)/mean(x, ...)
+df1 %>%
+  summarise_if(is.numeric, CV, na.rm = TRUE)
+
+
+# várias estatísticas para várias variáveis
+aux <- df1 %>%
+  summarise_at(vars(prova1:prova3, faltas),
+               c("mean", "max", "min", "CV"),
+               na.rm = TRUE)
+aux
+
+# Empilha o resultado.
+aux %>%
+  pivot_longer(cols = everything(),
+               names_to = c("stat", "variable"), 
+               names_sep = "_",
+               values_to = "value")
+
+
+my_stats <- function(x) {
+  c(mean(x, na.rm = TRUE),
+    min(x, na.rm = TRUE),
+    max(x, na.rm = TRUE),
+    CV(x, na.rm = TRUE))
+}
+
+# Já calcula empilhado.
+df1 %>%
+  summarise_at(vars(prova1:prova3, faltas),
+               my_stats) %>%
+  add_column(stat = c("media", "min", "max", "CV"),
+             .before = 0)
+
+
+#####################
+# AGREGAÇÃO
+#####################
+# consiste em aplicar estatísticas em variáveis fazendo a extratificação por outras variáveis.
+# são tarefas conhecidas como split-apply-combine ou GROUP BY
+
+# agregacao de uma tabela
+df1 %>%
+  group_by(curso) %>%
+  summarise_at(vars(prova1:prova3, faltas),
+               c("mean", "sd"),
+               na.rm = TRUE)
+
+# primeiro empilha, depois agrupa, por ultimo sumariza
+df1 %>%
+  select(curso, prova1:prova3, faltas) %>%
+  gather(key = "variavel", value = "valor", -curso) %>%
+  group_by(curso, variavel) %>%
+  summarise_at("valor",
+               c("mean", "sd"),
+               na.rm = TRUE)
+
+# Uma vez que uma tabela é agrupada, várias informações e métodos estão disponíveis
+u <- df1 %>%
+  group_by(curso)
+
+class(u)
+methods(class = "grouped_df")
+n_groups(u)
+group_vars(u)
+group_size(u)
+group_indices(u)
+
+##################################
+# CONCATENAÇÃO DE TABELAS
+##################################
+# Concatena por empilhamento de tabelas (linhas).
+bind_rows(df1[1:3, c(1, 3, 5)],
+          df1[5:7, c(1, 3, 5, 4)],
+          df1[4,   c(1,    5, 4)])
+
+
+# Concatena por enfileiramento de tabelas (colunas).
+# DANGER: assume que as tabelas são compatíveis para a operação.
+bind_cols(df1[, c(1:3)],
+          df1[, c(6:7)])
+
+
+
+###########################################
+###  JUNÇÕES (joins)
+###########################################
+
+# Indivíduos comuns as duas tabelas.
+inner_join(df1, df_extra, by = c("matricula" = "mat", "nome"))
+
+# União de todos..
+full_join(df1, df_extra, by = c("matricula" = "mat", "nome"))
+
+# Mantém todos da 1º trazendo os da 2ª
+left_join(df1, df_extra, by = c("matricula" = "mat", "nome"))
+
+# O contrário.
+right_join(df1, df_extra, by = c("matricula" = "mat", "nome"))
+
+# Aqueles que só aparecem na 1ª.
+anti_join(df1, df_extra, by = c("matricula" = "mat", "nome"))
+# Aqueles que só aparecem na 2ª.
+anti_join(df_extra, df1, by = c("mat" = "matricula", "nome"))
 
 
 
